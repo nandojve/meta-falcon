@@ -1,0 +1,49 @@
+From 1416830c2c452d3c8e00d5e121b5825ebfc6bd23 Mon Sep 17 00:00:00 2001
+From: Thomas Del Grande <tgrande@pd3.com.br>
+Date: Mon, 5 Jun 2017 14:41:48 -0300
+Subject: [PATCH] Add integration with Katana2 switch
+
+Implement driver hook for driver_set_new_state.
+This hook sends a message to ESWCTRL daemon so that
+the port state can be updated in the switch device.
+
+Change-Id: I338eb6e109c6579c6eaa4d5072d1321b719f1b45
+Signed-off-by: Thomas Del Grande <tgrande@pd3.com.br>
+---
+ driver_deps.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/driver_deps.c b/driver_deps.c
+index 418d484..d9e4b94 100644
+--- a/driver_deps.c
++++ b/driver_deps.c
+@@ -13,6 +13,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <asm/byteorder.h>
++#include <libconfig/esw.h>
+ 
+ #include "log.h"
+ #include "mstp.h"
+@@ -60,8 +61,16 @@ void driver_delete_port(port_t *prt)
+  */
+ int driver_set_new_state(per_tree_port_t *ptp, int new_state)
+ {
+-    /* TODO: insert driver-specific code here */
+-    return new_state;
++	struct esw_stp_port_cfg_t cfg;
++
++	strncpy(cfg.port_name, ptp->port->sysdeps.name, IFNAMSIZ);
++	cfg.msti = ptp->MSTID;
++	cfg.state = new_state;
++	cfg.role = ptp->role;
++
++	libconfig_esw_stp_set_port_state(&cfg);
++
++	return new_state;
+ }
+ 
+ bool driver_create_msti(bridge_t *br, __u16 mstid)
+-- 
+2.7.4
+

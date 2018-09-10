@@ -1,0 +1,56 @@
+From 5470958b4ac6d5ce806f015eccf56ff8be28a7a7 Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Mon, 22 Feb 2016 14:43:31 -0300
+Subject: [PATCH] Makefile: Fix yocto out of tree build
+
+Change-Id: Ib52bc7818a73770ddf6ae580ab2145a98e721e21
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ Makefile | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f27f08e..67cfcfe 100644
+--- a/Makefile
++++ b/Makefile
+@@ -26,8 +26,6 @@ CFLAGS += -Wall -fPIC
+ #LDFLAGS += -shared -Wl,--version-script=pamsymbols.ver
+ LDFLAGS += -shared
+ 
+-$(if $(wildcard src/config.h),,$(error You must run './configure [options]' before doing 'make'))
+-
+ ######################################################################
+ #
+ #  The default rule to build everything.
+@@ -38,13 +36,12 @@ all: pam_radius_auth.so
+ #
+ #  Build the object file from the C source.
+ #
+-export CFLAGS
+ 
+-src/pam_radius_auth.o: src/pam_radius_auth.c src/pam_radius_auth.h
+-	@$(MAKE) -C src $(notdir $@)
++$(BUILDIR)/pam_radius_auth.o: $(SRCDIR)/pam_radius_auth.c $(SRCDIR)/pam_radius_auth.h
++	$(CC) $(CFLAGS) -I$(BUILDIR)/src -c $< -o $@
+ 
+-src/md5.o: src/md5.c src/md5.h
+-	@$(MAKE) -C src $(notdir $@)
++$(BUILDIR)/md5.o: $(SRCDIR)/md5.c $(SRCDIR)/md5.h
++	$(CC) $(CFLAGS) -I$(BUILDIR)/src -c $< -o $@
+ 
+ #
+ # This is what should work on Irix:
+@@ -64,8 +61,8 @@ src/md5.o: src/md5.c src/md5.h
+ #
+ #	gcc -shared pam_radius_auth.o md5.o -lpam -lc -o pam_radius_auth.so
+ #
+-pam_radius_auth.so: src/pam_radius_auth.o src/md5.o
+-	$(CC) $(LDFLAGS) $^ -lpam -o pam_radius_auth.so
++pam_radius_auth.so: $(BUILDIR)/pam_radius_auth.o $(BUILDIR)/md5.o
++	$(CC) $(LDFLAGS) $(BUILDIR)/pam_radius_auth.o $(BUILDIR)/md5.o -lpam -o $(BUILDIR)/pam_radius_auth.so
+ 
+ ######################################################################
+ #
+-- 
+1.9.1
+

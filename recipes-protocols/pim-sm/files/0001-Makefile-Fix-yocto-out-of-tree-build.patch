@@ -1,0 +1,36 @@
+From aa52d9545c7e7f36aa64cd73d48401000cec962b Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Fri, 26 Feb 2016 13:48:46 -0300
+Subject: [PATCH 1/2] Makefile: Fix yocto out of tree build
+
+Change-Id: Id1a3de05ff477d1575194cf3b2f82fcb927e76f8
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 2643efa..0a4d5ef 100644
+--- a/Makefile
++++ b/Makefile
+@@ -37,7 +37,7 @@ CPPFLAGS     += -D_PATH_SYSCONF=\"$(sysconfdir)\"
+ CFLAGS       += $(INCLUDES) $(DEFS) $(USERCOMPILE)
+ CFLAGS       += -W -Wall -Wextra -fno-strict-aliasing
+ LDLIBS        = $(EXTRA_LIBS)
+-OBJS          = $(IGMP_OBJS) $(ROUTER_OBJS) $(PIM_OBJS) $(DVMRP_OBJS) $(EXTRA_OBJS)
++OBJS          = $(IGMP_OBJS) $(ROUTER_OBJS) $(PIM_OBJS) $(DVMRP_OBJS)
+ SRCS          = $(OBJS:.o=.c)
+ MANS          = $(EXEC).8
+ DISTFILES     = README.md README-config.md README.config.jp README-debug.md ChangeLog.org \
+@@ -47,7 +47,7 @@ DISTFILES     = README.md README-config.md README.config.jp README-debug.md Chan
+ 
+ all: $(EXEC)
+ 
+-.c.o:
++%.o: $(SRCDIR)/%.c
+ 	@printf "  CC      $@\n"
+ 	@$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+ 
+-- 
+1.9.1
+

@@ -1,0 +1,42 @@
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+## DROP --rt-type 0 (IPv6 Type 0 Routing Headers)
+## modern kernels since 2.6.21.1 automatically drop this traffic
+#-A INPUT -m rt --rt-type 0 -j DROP
+#-A OUTPUT -m rt --rt-type 0 -j DROP
+#-A FORWARD -m rt --rt-type 0 -j DROP
+
+## loopback and LAN bridge
+-A INPUT -i lo -j ACCEPT
+-A INPUT -d ::1 -j ACCEPT
+-A INPUT -i br-lan -j ACCEPT
+
+## ACCEPT already ESTABLISHED connections
+## '-m state' was deprecated in favor of '-m conntrack'
+#-A INPUT -p ALL -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+## Drop ICMP redirect messages
+-A INPUT -p ipv6-icmp --icmpv6-type redirect -j DROP
+
+## ACCEPT ICMP from anywhere and SSH from LAN bridge
+-A INPUT -p ipv6-icmp -j ACCEPT
+-A INPUT -p tcp -i br-lan --dport 22 -m state --state NEW -j ACCEPT
+
+## special rejections
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+-A INPUT -p udp -j REJECT --reject-with icmp6-port-unreachable
+-A INPUT -j REJECT --reject-with icmp6-adm-prohibited
+
+COMMIT

@@ -1,0 +1,71 @@
+diff --git a/plugins/jvm/uwsgiplugin.py b/plugins/jvm/uwsgiplugin.py
+index 80cafd9..b9b9cb4 100644
+--- a/plugins/jvm/uwsgiplugin.py
++++ b/plugins/jvm/uwsgiplugin.py
+@@ -65,12 +65,6 @@ if "-framework JavaVM" in JVM_LIBPATH:
+ 
+ GCC_LIST = ['jvm_plugin']
+ 
+-if 'LD_RUN_PATH' in os.environ:
+-    os.environ['LD_RUN_PATH'] += ':' + JVM_LIBPATH[0][2:]
+-else:
+-    os.environ['LD_RUN_PATH'] = JVM_LIBPATH[0][2:]
+-
+-
+ def post_build(config):
+     if os.system("javac %s/plugins/jvm/uwsgi.java" % os.getcwd()) != 0:
+         os._exit(1)
+diff --git a/plugins/php/uwsgiplugin.py b/plugins/php/uwsgiplugin.py
+index 2f2becd..f6319bd 100644
+--- a/plugins/php/uwsgiplugin.py
++++ b/plugins/php/uwsgiplugin.py
+@@ -17,12 +17,7 @@ LDFLAGS = os.popen(PHPPATH + ' --ldflags').read().rstrip().split()
+ 
+ if ld_run_path:
+     LDFLAGS.append('-L%s' % ld_run_path)
+-    os.environ['LD_RUN_PATH'] = ld_run_path
+ 
+ LIBS = [os.popen(PHPPATH + ' --libs').read().rstrip(), '-lphp5']
+ 
+-phplibdir = os.environ.get('UWSGICONFIG_PHPLIBDIR')
+-if phplibdir:
+-    LIBS.append('-Wl,-rpath=%s' % phplibdir)
+-
+ GCC_LIST = ['php_plugin', 'session']
+diff --git a/plugins/python/uwsgiplugin.py b/plugins/python/uwsgiplugin.py
+index 499c2d5..10d332a 100644
+--- a/plugins/python/uwsgiplugin.py
++++ b/plugins/python/uwsgiplugin.py
+@@ -72,10 +72,8 @@ if 'UWSGI_PYTHON_NOLIB' not in os.environ:
+     else:
+         try:
+             LDFLAGS.append("-L%s" % sysconfig.get_config_var('LIBDIR'))
+-            os.environ['LD_RUN_PATH'] = "%s" % (sysconfig.get_config_var('LIBDIR'))
+         except:
+             LDFLAGS.append("-L%s/lib" % sysconfig.PREFIX)
+-            os.environ['LD_RUN_PATH'] = "%s/lib" % sysconfig.PREFIX
+ 
+         LIBS.append('-lpython%s' % get_python_version())
+ else:
+diff --git a/plugins/rack/uwsgiplugin.py b/plugins/rack/uwsgiplugin.py
+index 7dfb322..40a7efb 100644
+--- a/plugins/rack/uwsgiplugin.py
++++ b/plugins/rack/uwsgiplugin.py
+@@ -46,7 +46,6 @@ LIBS = os.popen(RUBYPATH + " -e \"require 'rbconfig';print %s::CONFIG['LIBS']\""
+ 
+ if has_shared == 'yes':
+     LDFLAGS.append('-L' + libpath)
+-    os.environ['LD_RUN_PATH'] = libpath
+     LIBS.append(os.popen(RUBYPATH + " -e \"require 'rbconfig';print '-l' + %s::CONFIG['RUBY_SO_NAME']\"" % rbconfig).read().rstrip())
+ else:
+     rubylibdir = os.popen(RUBYPATH + " -e \"require 'rbconfig';print RbConfig::CONFIG['rubylibdir']\"").read().rstrip()
+diff --git a/plugins/ruby19/uwsgiplugin.py b/plugins/ruby19/uwsgiplugin.py
+index eb5aecd..cf5070a 100644
+--- a/plugins/ruby19/uwsgiplugin.py
++++ b/plugins/ruby19/uwsgiplugin.py
+@@ -40,5 +40,4 @@ LDFLAGS = os.popen(RUBYPATH + " -e \"require 'rbconfig';print %s::CONFIG['LDFLAG
+ 
+ libpath = os.popen(RUBYPATH + " -e \"require 'rbconfig';print %s::CONFIG['libdir']\"" % rbconfig).read().rstrip()
+ LDFLAGS.append('-L' + libpath)
+-os.environ['LD_RUN_PATH'] = libpath
+ LIBS = os.popen(RUBYPATH + " -e \"require 'rbconfig';print '-l' + %s::CONFIG['RUBY_SO_NAME']\"" % rbconfig).read().rstrip().split()

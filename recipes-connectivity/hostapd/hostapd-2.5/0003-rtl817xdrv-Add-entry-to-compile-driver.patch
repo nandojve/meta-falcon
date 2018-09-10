@@ -1,0 +1,44 @@
+From a04ec0e3a8a2cb9d941f4d24b7cda5cffd013566 Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Tue, 16 Feb 2016 09:09:22 -0200
+Subject: [PATCH 3/9] rtl817xdrv: Add entry to compile driver
+
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ src/drivers/drivers.mak | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/src/drivers/drivers.mak b/src/drivers/drivers.mak
+index 3dd43c7..6f97378 100644
+--- a/src/drivers/drivers.mak
++++ b/src/drivers/drivers.mak
+@@ -74,6 +74,10 @@ DRV_CFLAGS += -DCONFIG_DRIVER_BSD
+ DRV_OBJS += ../src/drivers/driver_bsd.o
+ CONFIG_L2_FREEBSD=y
+ CONFIG_DNET_PCAP=y
++ifdef CONFIG_SUPPORT_RTW_DRIVER
++DRV_CFLAGS += -DCONFIG_SUPPORT_RTW_DRIVER -DCONFIG_DRIVER_RTL_DFS
++NEED_AP_MLME=y
++endif
+ endif
+ 
+ ifdef CONFIG_DRIVER_OPENBSD
+@@ -84,6 +88,15 @@ DRV_CFLAGS += -DCONFIG_DRIVER_OPENBSD
+ DRV_OBJS += ../src/drivers/driver_openbsd.o
+ endif
+ 
++ifdef CONFIG_DRIVER_RTW
++DRV_AP_CFLAGS += -DCONFIG_DRIVER_RTW -DCONFIG_DRIVER_RTL_DFS
++DRV_AP_OBJS += ../src/drivers/driver_rtw.o
++CONFIG_L2_PACKET=linux
++NEED_NETLINK=y
++NEED_LINUX_IOCTL=y
++NEED_AP_MLME=y
++endif
++
+ ifdef CONFIG_DRIVER_NONE
+ DRV_CFLAGS += -DCONFIG_DRIVER_NONE
+ DRV_OBJS += ../src/drivers/driver_none.o
+-- 
+1.9.1
+

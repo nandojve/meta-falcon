@@ -1,0 +1,5 @@
+
+# Driver interface for Realtek USB drivers that using the Realtek
+# RTL871xdrv interface
+CONFIG_DRIVER_RTW=y
+CONFIG_SUPPORT_RTW_DRIVER=y

@@ -1,0 +1,10 @@
+[Unit]
+Description=Telnet Server
+After=local-fs.target
+
+[Service]
+ExecStart=-@SBINDIR@/in.telnetd
+ExecReload=@BASE_BINDIR@/kill -HUP $MAINPID
+StandardInput=socket
+StandardError=syslog
+KillMode=process

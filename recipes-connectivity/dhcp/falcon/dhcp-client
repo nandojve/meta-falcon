@@ -1,0 +1,5 @@
+# @SYSCONFDIR@/default/dhcp-client
+
+# On what interfaces should the DHCP client (dhclient) ask for network parameters?
+# Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACES=""

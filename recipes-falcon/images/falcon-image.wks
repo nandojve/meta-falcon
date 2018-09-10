@@ -1,0 +1,8 @@
+# short-description: FALCON base partition layout
+# long-description: This image contains boot partition and 4 partitions
+# created from falcon-image recipe.
+
+part /boot/golden --ondisk mmcblk --label golden --align 1024 --fstype=ext4 --size 512M  --source bootimg-partition
+part /            --ondisk mmcblk --label rootfs --align 1024 --fstype=ext4 --source rootfs
+
+bootloader --ptable gpt

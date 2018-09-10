@@ -1,0 +1,9 @@
+
+/mnt/files/fwupgrade.log
+{
+    size 5M
+    copytruncate
+    rotate 1
+    start 1
+    nocompress
+}

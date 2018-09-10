@@ -1,0 +1,12 @@
+[Unit]
+Description=Dynamic Host Configuration Protocol (DHCP) for IPv4
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=@LOCALSTATEDIR@/run/dhclient.pid
+EnvironmentFile=-@SYSCONFDIR@/default/dhcp-client
+ExecStart=@BASE_SBINDIR@/dhclient -4 -cf @SYSCONFDIR@/dhcp/dhclient.conf -lf @LOCALSTATEDIR@/lib/dhcp/dhclient.leases -q $INTERFACES
+
+[Install]
+WantedBy=multi-user.target

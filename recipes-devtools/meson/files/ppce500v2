@@ -1,0 +1,28 @@
+[binaries]
+c = ['powerpc-falcon-linux-gnuspe-gcc', '-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe']
+cpp = ['powerpc-falcon-linux-gnuspe-g++', '-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe']
+ar = ['powerpc-falcon-linux-gnuspe-ar']
+nm = ['powerpc-falcon-linux-gnuspe-nm']
+ld = ['powerpc-falcon-linux-gnuspe-ld', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe']
+strip = ['powerpc-falcon-linux-gnuspe-strip']
+readelf = ['powerpc-falcon-linux-gnuspe-readelf']
+pkgconfig = 'pkg-config'
+
+[properties]
+needs_exe_wrapper = true
+c_args = ['-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe', '-O', '-fno-omit-frame-pointer', '-g', '-feliminate-unused-debug-types', '-pipe']
+c_link_args = ['-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe', '-Wl,-O1', '-Wl,--hash-style=gnu', '-Wl,--as-needed']
+cpp_args = ['-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe', '-O', '-fno-omit-frame-pointer', '-g', '-feliminate-unused-debug-types', '-pipe', '-fvisibility-inlines-hidden']
+cpp_link_args = ['-m32', '-mcpu=8548', '-mabi=spe', '-mspe', '-mfloat-gprs=double', '--sysroot=/opt/falcon/16.2/sysroots/ppce500v2-falcon-linux-gnuspe', '-Wl,-O1', '-Wl,--hash-style=gnu', '-Wl,--as-needed']
+
+[host_machine]
+system = 'linux-gnuspe'
+cpu_family = 'powerpc'
+cpu = 'powerpc'
+endian = 'bogus-endian'
+
+[target_machine]
+system = 'linux-gnuspe'
+cpu_family = 'powerpc'
+cpu = 'powerpc'
+endian = 'bogus-endian'

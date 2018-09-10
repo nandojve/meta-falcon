@@ -1,0 +1,12 @@
+[Unit]
+Description=Dynamic Host Configuration Protocol (DHCP) for IPv6
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=@LOCALSTATEDIR@/run/dhclient6.pid
+EnvironmentFile=-@SYSCONFDIR@/default/dhcp-client
+ExecStart=@BASE_SBINDIR@/dhclient -6 -cf @SYSCONFDIR@/dhcp/dhclient6.conf -lf @LOCALSTATEDIR@/lib/dhcp/dhclient6.leases -q $INTERFACES
+
+[Install]
+WantedBy=multi-user.target

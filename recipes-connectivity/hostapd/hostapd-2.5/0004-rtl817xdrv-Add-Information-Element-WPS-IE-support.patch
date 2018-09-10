@@ -1,0 +1,63 @@
+From e843b5c588ae5f1ecbb9524d25e609164926a225 Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Tue, 16 Feb 2016 09:19:27 -0200
+Subject: [PATCH 4/9] rtl817xdrv: Add Information Element (WPS IE) support
+
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ src/drivers/driver_wext.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/src/drivers/driver_wext.c b/src/drivers/driver_wext.c
+index 01defdf..fc90a28 100644
+--- a/src/drivers/driver_wext.c
++++ b/src/drivers/driver_wext.c
+@@ -1081,6 +1081,34 @@ void wpa_driver_wext_scan_timeout(void *eloop_ctx, void *timeout_ctx)
+ 	wpa_supplicant_event(timeout_ctx, EVENT_SCAN_RESULTS, NULL);
+ }
+ 
++//added for wps2.0 @20110519
++static int wpa_driver_wext_set_probe_req_ie(struct wpa_driver_wext_data *drv, const u8 *extra_ies,
++				size_t extra_ies_len)
++{
++	unsigned char *pbuf;
++	struct iwreq iwr;
++	int ret = 0;
++
++	pbuf = os_malloc(extra_ies_len);
++	os_memset(pbuf, 0, extra_ies_len);
++
++	os_memcpy(pbuf, extra_ies, extra_ies_len);
++
++	iwr.u.data.pointer = (caddr_t)pbuf;
++	iwr.u.data.length = extra_ies_len;
++	iwr.u.data.flags = 0x8766;//magic number
++
++	if (ioctl(drv->ioctl_sock, SIOCSIWPRIV, &iwr) < 0) {
++		perror("ioctl[SIOCSIWMLME]");
++		ret = -1;
++	}
++
++	if(pbuf)
++		os_free(pbuf);
++
++	return ret;
++}
++
+ 
+ /**
+  * wpa_driver_wext_scan - Request the driver to initiate scan
+@@ -1103,6 +1131,10 @@ int wpa_driver_wext_scan(void *priv, struct wpa_driver_scan_params *params)
+ 		return -1;
+ 	}
+ 
++	//added for wps2.0 @20110519
++	wpa_driver_wext_set_probe_req_ie(drv, params->extra_ies,
++				params->extra_ies_len);
++
+ 	os_memset(&iwr, 0, sizeof(iwr));
+ 	os_strlcpy(iwr.ifr_name, drv->ifname, IFNAMSIZ);
+ 
+-- 
+1.9.1
+

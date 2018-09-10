@@ -1,0 +1,46 @@
+From d1e55d6aee23769cab88e3a89a95be55f7fdaece Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Fri, 26 Feb 2016 13:54:32 -0300
+Subject: [PATCH 2/2] configure: Fix yocto out of tree build
+
+Change-Id: I2cd9885f26a92d061c718eee384fe6efa5aab8ef
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ configure | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/configure b/configure
+index 301830f..1db078a 100755
+--- a/configure
++++ b/configure
+@@ -251,10 +251,6 @@ case $OS in
+ 	echo "INCLUDES     = -Iinclude" >> $CFG
+ 	echo "DEFS        += -DRAW_OUTPUT_IS_RAW -DIOCTL_OK_ON_RAW_SOCKET" >> $CFG
+ 	echo "ROUTER_OBJS += netlink.o" >> $CFG
+-	if [ $embedded_libc -ne 1 ]; then
+-	    echo "EXTRA_OBJS   = libite/strlcpy.o libite/strlcat.o" >> $CFG
+-	fi
+-	echo "EXTRA_OBJS  += libite/pidfile.o libite/strtonum.o" >> $CFG
+ 	echo "EXTRA_LIBS   =" >> $CFG
+ 	;;
+ 
+@@ -300,16 +296,5 @@ fi
+ cat $TMP >> $CFG
+ rm $TMP
+ 
+-if [ ! -e libite/lite.h ]; then
+-    print "  FIXDEP  libite/lite.h missing ... "
+-    git submodule update --init >/dev/null
+-    if [ $? -ne 0 ]; then
+-	print "FAILED!  No Internet access?"
+-	exit 1
+-    fi
+-    print "OK\n"
+-fi
+-
+-
+ exit 0
+ 
+-- 
+1.9.1
+

@@ -1,0 +1,32 @@
+From 3839838a8726665c0d3fca691ad2401529a17c9d Mon Sep 17 00:00:00 2001
+From: Gerson Fernando Budke <nandojve@gmail.com>
+Date: Tue, 16 Feb 2016 13:36:22 -0200
+Subject: [PATCH 6/9] rtl817xdrv: Skip error when request scan of neighbor fail
+
+Signed-off-by: Gerson Fernando Budke <nandojve@gmail.com>
+---
+ src/ap/hw_features.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/ap/hw_features.c b/src/ap/hw_features.c
+index fc8786d..9dc5ce9 100644
+--- a/src/ap/hw_features.c
++++ b/src/ap/hw_features.c
+@@ -494,7 +494,13 @@ static int ieee80211n_check_40mhz(struct hostapd_iface *iface)
+ 		iface->num_ht40_scan_tries = 1;
+ 		eloop_cancel_timeout(ap_ht40_scan_retry, iface, NULL);
+ 		eloop_register_timeout(1, 0, ap_ht40_scan_retry, iface, NULL);
+-		return 1;
++
++#ifdef CONFIG_SUPPORT_RTW_DRIVER
++		if(!strncmp(iface->conf->driver->name, "rtl871xdrv", 10))
++			return 0;
++		else
++			return -1;
++#endif
+ 	}
+ 
+ 	if (ret < 0) {
+-- 
+1.9.1
+

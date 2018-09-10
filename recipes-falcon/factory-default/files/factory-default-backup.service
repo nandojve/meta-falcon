@@ -1,0 +1,20 @@
+[Unit]
+Description=Factory-Default Backup Service
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=local-fs.target systemd-tmpfiles-setup.service
+#Before=systemd-update-done.service
+#ConditionNeedsUpdate=|@FACTORY_DEFAULT_DIR@
+Before=basic.target factory-default.service
+ConditionPathExists=|!@FACTORY_DEFAULT_DIR@/.backup
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+StandardOutput=syslog
+StandardError=syslog
+ExecStart=@BINDIR@/factory-default-backup.sh
+ExecStartPost=@BASE_BINDIR@/touch @FACTORY_DEFAULT_DIR@/.backup
+
+[Install]
+WantedBy=basic.target

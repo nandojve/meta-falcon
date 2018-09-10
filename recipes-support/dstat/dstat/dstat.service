@@ -1,0 +1,7 @@
+[Unit]
+Description=Dstat system statistics collector
+After=systemd-journald.service
+
+[Service]
+Type=oneshot
+ExecStart=@BASE_BINDIR@/bash -c "@BINDIR@/dstat -pmdc --socket --fs --top-cpu --top-mem 1 1 | tail -n3 | head -n2"

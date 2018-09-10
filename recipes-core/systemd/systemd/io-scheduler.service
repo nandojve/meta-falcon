@@ -1,0 +1,12 @@
+[Unit]
+Description=I/O Scheduler Setter
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'echo noop > /sys/block/mmcblk0/queue/scheduler'
+TimeoutSec=0
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

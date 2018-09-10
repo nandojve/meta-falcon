@@ -1,0 +1,2 @@
+/dev/mmcblk0p1        /mnt/config          auto       defaults,nofail,noexec,nosuid,errors=continue,usrquota,grpquota,data=journal,nodelalloc,noatime,nodiratime,journal_async_commit 0 2
+/dev/mmcblk0p4        /mnt/files           auto       defaults,nofail,noexec,nosuid,errors=continue,usrquota,grpquota,data=ordered,nodelalloc,noatime,nodiratime 0 2

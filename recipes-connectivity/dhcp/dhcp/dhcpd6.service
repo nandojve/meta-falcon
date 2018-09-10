@@ -1,0 +1,15 @@
+[Unit]
+Description=DHCPv6 Server Daemon
+Documentation=man:dhcpd(8) man:dhcpd.conf(5)
+After=network.target
+After=time-sync.target
+
+[Service]
+PIDFile=/var/run/dhcpd6.pid
+EnvironmentFile=/etc/default/dhcp-server
+EnvironmentFile=-/etc/sysconfig/dhcpd6
+ExecStartPre=/bin/touch /var/lib/dhcp/dhcpd6.leases
+ExecStart=/usr/sbin/dhcpd -f -6 -cf /etc/dhcp/dhcpd6.conf -pf /var/run/dhcpd6.pid $DHCPDARGS -q $INTERFACES
+
+[Install]
+WantedBy=multi-user.target

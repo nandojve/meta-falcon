@@ -1,0 +1,14 @@
+SUMMARY = "FACTORY DEFAULT Sample"
+LICENSE = "CLOSED"
+
+SRC_URI = "file://factory-default.smp"
+
+inherit factory-default
+
+FACTORY_DEFAULT_${PN} = "factory-default.smp"
+
+do_install() {
+    install -Dm 644 ${WORKSPACE}/factory-default.smp ${D}${FACTORY_DEFAULT_CONFIG_DIR}/factory-default.smp
+}
+
+FILES_${PN} = "${FACTORY_DEFAULT_CONFIG_DIR}"
